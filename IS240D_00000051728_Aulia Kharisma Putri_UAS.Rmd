@@ -1,0 +1,256 @@
+---
+title: "Lembar Jawaban UAS IS240 Praktek Probabilitas dan Statistika"
+author: "Tuliskan nama anda di sini."
+date: "2021-05"
+output:
+  pdf_document: 
+    toc: yes
+    toc_depth: 4
+    number_sections: yes
+    keep_tex: yes
+  html_document: 
+    number_sections: yes
+  word_document: 
+    toc: yes
+    toc_depth: 4
+    highlight: tango
+    keep_md: yes
+---
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+******************************************************   
+Nama     : Aulia Kharisma Putri
+Kelas    : IS240 D    
+Kelompok : D7     
+NIM      : 00000051728   
+Tanggal  : 2021-03      
+Waktu    :     
+******************************************************   
+
+# Petunjuk Umum
+
+1.	Gunakan template jurnal Infosys dari laman https://ejournals.umn.ac.id/index.php/SI untuk menuliskan laporan individu. Gunakan template markdown (.Rmd) yang telah disediakan untuk script anda.
+2.	File data disimpan dalam format MS Excel .xlsx. File laporan dalam format MS Word .docx. 
+3.	Format nama file: NamaKelompok_Nama_NIM.extension, contoh: A3_KenDedes_0123456.Rmd.
+4.	Semua output harus dihasilkan oleh program R.
+5.	Semua file yang digunakan untuk menuliskan laporan ini dikumpulkan via elearning dengan zip relative path.
+6.	Setiap mahasiswa mengumpulkan sendiri-sendiri sesuai jadwal UAS.
+7.  **Pastikan file Rmd anda dapat dicompile dengan asumsi file data berada pada folder yang sama dengan script; jangan menggunakan absolute file path.** Bila anda menggunakan R package yang bukan merupakan package default R, tuliskan informasi mengenai package yang perlu diinstal. **File yang tidak dapat dicompile secara otomatis mendapatkan nilai 1 dari 100.**
+
+
+# Soal
+
+## (Bobot 10%) Kelengkapan dan Kesesuaian Format
+
+File markdown script, file laporan dengan format jurnal Infosys dan file data dalam format yang telah ditentukan pada petunjuk ujian disubmit via e-learning.
+
+## (Bobot 10%) Impor Data dan Deskripsi Singkat Data
+
+Impor data anda ke dalam R dengan asumsi file data berada pada folder yang sama dengan file script R anda. Tampilkan deskripsi singkat data anda. 
+
+
+*Jawaban*
+
+```{r message=FALSE, warning=FALSE}
+
+#a-----
+#Import data
+library(ggplot2)
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(moments)
+library(MVN)
+library(tidyverse)
+library(nortest)
+library(car)
+library(knitr)
+library(latex2exp)
+library(gridExtra)
+library(lmtest)
+
+library(readxl)
+IS240D_00000051728_Aulia_Kharisma_Putri_UAS <- read_excel("IS240D_00000051728_Aulia Kharisma Putri_UAS.xlsx")
+View(IS240D_00000051728_Aulia_Kharisma_Putri_UAS)
+
+#b-------
+#Tuliskan perintah R untuk menampilkan deskripsi singkat data anda.
+IS240D_00000051728_Aulia_Kharisma_Putri_UAS
+summary(IS240D_00000051728_Aulia_Kharisma_Putri_UAS)
+str(IS240D_00000051728_Aulia_Kharisma_Putri_UAS)
+View(IS240D_00000051728_Aulia_Kharisma_Putri_UAS)
+head(IS240D_00000051728_Aulia_Kharisma_Putri_UAS)
+tail(IS240D_00000051728_Aulia_Kharisma_Putri_UAS)
+
+```
+
+
+## (Bobot 30%) Eksplorasi data 
+
+### (20%) Grafik 
+
+Gambarkan grafik yang sesuai untuk menggambarkan distribusi frekuensi semua variabel pada data anda. Bahaslah kategori dengan frekuensi tertinggi dan terendah. Apa yang dapat anda simpulkan? Gambarkan grafik sesuai untuk menggambarkan distribusi frekuensi variabel numerik pada data anda. Apakah distribusinya mengikuti distribusi probabilitas tertentu? Tunjukkan outlier (bila ada) pada gambar dan lakukan uji normalitas. Apa yang dapat anda simpulkan? (Bila semua data anda adalah data kategorikal, tuliskan "Tidak ada variabel numerik.")
+
+
+*Jawaban*
+
+```{r message=FALSE, warning=FALSE}
+#Grafik Hipotesa 1
+(myTable <- table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet))
+(myTable <- table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Kuota_yang_dihabiskan))
+(myTable <- table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_waktu_belajar))
+(myTable <- table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_penggunaan_internet_sebelum_pandemi))
+(myTable <- table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Waktu_tidur_sehari))
+
+Durasi_internet <- table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet)
+barplot(Durasi_internet, main = "Distribusi berdasarkan durasi internet (jam/hari)", col = rainbow(5))
+skewness(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet)
+#Kesimpulan
+#Durasi internet  yang terdaftar dalam survei kami memiliki rantang dari 3 sampai 18 jam.  Frekuensi tertinggi dalam Distribusi Berdasarkan Durasi Internet adalah  4 jam yang memiliki 70 responden. Dan Frekuensi terendah adalah 17 jam yang memiliki <10 responden. Kesimpulan dari diagram di atas bahwa rata-rata responden kami menghabiskan waktu bermain internet sebanyak 4 jam perhari. 
+
+#Grafik Hipotesa 2
+Kuota_yang_dihabiskan <- table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Kuota_yang_dihabiskan)
+barplot(Kuota_yang_dihabiskan, main = "Distribusi berdasarkan Kuota yang Dihabiskan (GB)", col = rainbow(5))
+#Kesimpulan
+#Pemakaian kuota  yang terdaftar dalam survei kami memiliki rentang dari 1 sampai 10 Gb.  Frekuensi tertinggi dalam Distribusi Berdasarkan Kuota yang Dihabiskan adalah  3Gb yang memiliki 50 responden. Dan Frekuensi terendah adalah 7Gb yang memiliki <10 responden. Kesimpulan dari diagram di atas bahwa rata-rata responden kami menghabiskan kuota internet sebanyak 3Gb. 
+
+#Grafik Hipotesa 3
+Durasi_waktu_belajar <- table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_waktu_belajar)
+barplot(Durasi_waktu_belajar, main = "Distribusi berdasarkan Durasi Waktu Belajar (Jam/hari)", col = rainbow(9))
+#Kesimpulan
+#Durasi waktu belajar yang terdaftar dalam survei kami memiliki rentang dari 1 sampai 7 jam.  Frekuensi tertinggi dalam Distribusi Berdasarkan Durasi Waktu Belajar adalah 1 jam  yang memiliki >60 responden. Dan Frekuensi terendah adalah 7 jam yang memiliki <10 responden. Kesimpulan dari diagram di atas bahwa rata-rata responden kami memiliki durasi waktu belajar sebanyak 1 jam perhari.
+
+#Grafik Hipotesa 4
+Durasi_penggunaan_internet_sebelum_pandemi <- table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_penggunaan_internet_sebelum_pandemi)
+barplot(Durasi_penggunaan_internet_sebelum_pandemi, main = "Distribusi berdasarkan durasi penggunaan internet sebelum pandemi (Jam/hari)", col = rainbow(5))
+#Kesimpulan
+#Durasi internet  yang terdaftar dalam survei kami memiliki rentang dari 1 sampai 10 jam.  Frekuensi tertinggi dalam Distribusi Berdasarkan Durasi Penggunaan Internet Sebelum Pandemi adalah  4 jam yang memiliki 35 responden. Dan Frekuensi terendah adalah 10 jam yang memiliki <15 responden. Kesimpulan dari diagram di atas bahwa rata-rata responden kami menghabiskan waktu bermain internet sebelum masa pandemi sebanyak 4 jam perhari. 
+
+#Grafik Hipotesa 5
+Waktu_tidur_sehari <- table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Waktu_tidur_sehari)
+barplot(Waktu_tidur_sehari, main = "Distribusi berdasarkan waktu tidur sehari (Jam/hari)", col = rainbow(2))
+#Kesimpulan
+#Waktu tidur yang terdaftar dalam survei kami memiliki rentang dari 5 sampai 11 jam.  Frekuensi tertinggi dalam Distribusi Berdasarkan Waktu Tidur Sehari adalah  8 jam yang memiliki >60 responden. Dan Frekuensi terendah adalah 5 dan 11 jam yang memiliki <10 responden. Kesimpulan dari diagram di atas bahwa rata-rata responden kami menghabiskan waktu tidur sebanyak 8 jam perhari.
+
+
+```
+
+### (10%) Besaran Statistik
+
+```{r message=FALSE, warning=FALSE}
+#Besaran Statistik----
+library(moments)
+summary(IS240D_00000051728_Aulia_Kharisma_Putri_UAS)
+
+sd(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$IPK_akhir_semester_kemarin)
+cv <- sd(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$IPK_akhir_semester_kemarin) / mean(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$IPK_akhir_semester_kemarin)
+
+skewness(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$IPK_akhir_semester_kemarin)
+kurtosis(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$IPK_akhir_semester_kemarin)
+
+#Kesimpulan 
+#Kurva condong ke kiri di karenakan kebanyakan responden memiliki IPK akhir semester kemarin di bawah rata-rata
+
+```
+
+
+
+## (Bobot 50%) Uji Hipotesa 
+
+```{r message=FALSE, warning=FALSE}
+
+# Grafik untuk hipotesa 1----------
+library(ggplot2)
+str(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$IPK_akhir_semester_kemarin)
+shapiro.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$IPK_akhir_semester_kemarin)
+str(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet)
+
+shapiro.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet)
+
+boxplot(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$IPK_akhir_semester_kemarin~ IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet, xlab = "Durasi internet " , ylab = "Ipk akhir semester kemarin" , horizontal = FALSE , main = "Hubungan antara Durasi Internet terhadap Ipk akhir semester kemarin")
+
+boxplot(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$IPK_akhir_semester_kemarin~ IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet,data =Durasi_internet,main="Hubungan antara Durasi Internet terhadap Ipk akhir semester kemarin",horizontal = TRUE,border="black",col="yellow")
+
+cor.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$IPK_akhir_semester_kemarin, IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet, method = "spearman", alternative = "two.sided")
+
+#kesimpulan
+#terdapat hubungan yang lemah antara Durasi internet dengan Ipk akhir semester kemarin
+
+# Uji Hipotesa 1 Shapiro Test
+
+# Grafik untuk hipotesa 2----------
+str(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet)
+shapiro.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet)
+str(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Kuota_yang_dihabiskan)
+shapiro.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Kuota_yang_dihabiskan)
+
+boxplot(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet~ IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Kuota_yang_dihabiskan, xlab = "Durasi internet " , ylab = "Kuota yang dihabiskan" , horizontal = FALSE , main = "Hubungan antara Durasi Internet terhadap Kuota yang dihabiskan")
+
+boxplot(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet~ IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Kuota_yang_dihabiskan, data = Durasi_internet,border="black",col="yellow",horizontal = TRUE)
+cor.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet, IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Kuota_yang_dihabiskan, method = "spearman", alternative = "two.sided")
+
+#kesimpulan
+#terdapat hubungan yang kuat antara Duasi internet dengan Kuota yang dihabiskan
+
+# Uji Hipotesa 2 Shapiro Test
+
+# Grafik untuk hipotesa 3----------
+chisq.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet, IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_waktu_belajar, simulate.p.value = TRUE)
+
+wilcox.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet, IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_waktu_belajar,paired = TRUE)
+
+
+boxplot(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet~ IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_waktu_belajar, xlab = "Durasi internet " , ylab = "Durasi waktu belajar" , horizontal = FALSE , main = "Hubungan antara Durasi Internet terhadap Durasi waktu belajar")
+
+boxplot(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet~ IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_waktu_belajar,data = Durasi_internet,border="black",col="yellow",horizontal = TRUE)
+cor.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet, IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_waktu_belajar, method = "spearman", alternative = "two.sided")
+
+#kesimpulan
+#terdapat hubungan yang lemah antara Durasi internet dengan Durasi waktu belajar
+
+# Uji Hipotesa 3 Non Parametik, chi square
+
+# Grafik untuk hipotesa 4------
+str(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet)
+shapiro.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet)
+str(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_penggunaan_internet_sebelum_pandemi)
+shapiro.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_penggunaan_internet_sebelum_pandemi)
+
+boxplot(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet~ IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_penggunaan_internet_sebelum_pandemi, xlab = "Durasi internet " , ylab = "Durasi tidur" , horizontal = FALSE , main = "Hubungan antara Durasi internet dengan Durasi penggunaan internet sebelum pandemi")
+
+boxplot(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet~ IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_penggunaan_internet_sebelum_pandemi,data = Durasi_internet,border="black",col="yellow",horizontal = TRUE)
+cor.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet, IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_penggunaan_internet_sebelum_pandemi, method = "spearman", alternative = "two.sided")
+
+#kesimpulan
+#terdapat hubungan yang kuat antara Durasi internet dengan Durasi penggunaan internet sebelum pandemi
+
+# Uji Hipotesa 4 Shapiro Test
+
+# Grafik untuk hipotesa 5--------
+str(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet)
+shapiro.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet)
+str(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Waktu_tidur_sehari)
+
+shapiro.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Waktu_tidur_sehari)
+
+boxplot(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet~ IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Waktu_tidur_sehari, xlab = "Durasi internet " , ylab = "Durasi tidur dalam sehari" , horizontal = FALSE , main = "Hubungan antara durasi internet terhadap waktu tidur dalam sehari")
+
+boxplot(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet~ IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Waktu_tidur_sehari,data = Durasi_internet,border="black",col="yellow",horizontal = TRUE)
+cor.test(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet, IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Waktu_tidur_sehari, method = "spearman", alternative = "two.sided")
+
+#kesimpulan
+#terdapat hubungan yang lemah antara Durasi internet dengan Durasi tidur dalam sehari
+
+# Uji Hipotesa 5Shapiro Test
+
+#TABULASI
+table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Domisili, IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Usia)
+table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Jenis_kelamin, IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_internet)
+table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Kuota_yang_dihabiskan, IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_penggunaan_internet_sebelum_pandemi)
+table(IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Durasi_waktu_belajar, IS240D_00000051728_Aulia_Kharisma_Putri_UAS$Waktu_tidur_sehari)
+
+```
+
